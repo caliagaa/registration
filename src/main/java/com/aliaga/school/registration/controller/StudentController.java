@@ -1,7 +1,7 @@
 package com.aliaga.school.registration.controller;
 
-import com.aliaga.school.registration.exception.StudentNotFoundException;
 import com.aliaga.school.registration.dto.Student;
+import com.aliaga.school.registration.exception.StudentNotFoundException;
 import com.aliaga.school.registration.exception.StudentServiceException;
 import com.aliaga.school.registration.service.StudentService;
 import org.springframework.http.ResponseEntity;

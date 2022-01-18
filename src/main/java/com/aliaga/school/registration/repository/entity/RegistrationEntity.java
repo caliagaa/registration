@@ -11,8 +11,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-@Entity(name = "REGISTRATION_COURSE")
+@Entity
+@Table(name = "REGISTRATION_COURSE")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

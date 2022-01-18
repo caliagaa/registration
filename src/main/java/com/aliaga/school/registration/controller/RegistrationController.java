@@ -3,10 +3,9 @@ package com.aliaga.school.registration.controller;
 import com.aliaga.school.registration.dto.Course;
 import com.aliaga.school.registration.dto.Registration;
 import com.aliaga.school.registration.dto.Student;
-import com.aliaga.school.registration.exception.CourseNotFoundException;
-import com.aliaga.school.registration.exception.CourseServiceException;
 import com.aliaga.school.registration.exception.RegistrationNotFoundException;
 import com.aliaga.school.registration.exception.RegistrationServiceException;
+import com.aliaga.school.registration.exception.RegistrationStudentAlreadyInCourseException;
 import com.aliaga.school.registration.service.RegistrationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,8 +29,9 @@ public class RegistrationController {
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<Registration> registerStudentToCourses(@RequestBody Registration registration) throws RegistrationServiceException {
-        return ResponseEntity.ok(registrationService.registerStudentToCourse(registration));
+    public ResponseEntity<Void> registerStudentToCourses(@RequestBody Registration registration) throws RegistrationServiceException, RegistrationStudentAlreadyInCourseException {
+        registrationService.registerStudentToCourse(registration);
+        return ResponseEntity.ok().build();
     }
 
 
@@ -53,5 +53,10 @@ public class RegistrationController {
     @GetMapping("/courses")
     public ResponseEntity<List<Course>> getCoursesByStudent(@RequestParam(name = "student-id") long studentId) throws RegistrationServiceException, RegistrationNotFoundException {
         return ResponseEntity.ok(registrationService.getCoursesByStudent(studentId));
+    }
+
+    @GetMapping("/courses/without-students")
+    public ResponseEntity<List<Course>> getCoursesWithoutStudents() throws RegistrationServiceException {
+        return ResponseEntity.ok(registrationService.getCoursesWithoutStudents());
     }
 }

@@ -6,7 +6,6 @@ import com.aliaga.school.registration.repository.entity.CourseEntity;
 import com.aliaga.school.registration.repository.entity.RegistrationEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
@@ -19,8 +18,6 @@ public interface RegistrationMapper {
 
     RegistrationMapper INSTANCE = Mappers.getMapper( RegistrationMapper.class );
 
-    RegistrationEntity toRegistrationEntity(Registration s );
-
     @Mapping(source = "student", target = "student")
     @Mapping(source = "student.registrations", target = "courses", qualifiedByName = "toCourses")
     Registration toRegistrationDTO(RegistrationEntity s);
@@ -28,7 +25,7 @@ public interface RegistrationMapper {
     List<Registration> toRegistrationDTO(List<RegistrationEntity> s);
 
     @Named("toCourses")
-    public default List<Course> toCourses(Set<RegistrationEntity> registrations) {
+    default List<Course> toCourses(Set<RegistrationEntity> registrations) {
         return registrations
                 .stream()
                 .map(RegistrationEntity::getCourse)
@@ -36,7 +33,7 @@ public interface RegistrationMapper {
                 .collect(Collectors.toList());
     }
 
-    public default Course toCourse(CourseEntity ce) {
+    default Course toCourse(CourseEntity ce) {
         return Course.builder()
                 .id(ce.getId())
                 .name(ce.getName())

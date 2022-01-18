@@ -3,8 +3,8 @@ package com.aliaga.school.registration.service;
 import com.aliaga.school.registration.dto.Student;
 import com.aliaga.school.registration.exception.StudentNotFoundException;
 import com.aliaga.school.registration.exception.StudentServiceException;
-import com.aliaga.school.registration.repository.StudentRepository;
 import com.aliaga.school.registration.mapper.StudentMapper;
+import com.aliaga.school.registration.repository.StudentRepository;
 import com.aliaga.school.registration.repository.entity.StudentEntity;
 import org.springframework.stereotype.Service;
 
