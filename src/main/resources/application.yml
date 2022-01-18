@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: "registration-course"
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    show-sql: false
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/school?&useSSL=false
+    username: root
+    password: password
+
+server:
+  port: 8080
