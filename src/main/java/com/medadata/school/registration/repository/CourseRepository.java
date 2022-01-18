@@ -8,4 +8,7 @@ import java.util.List;
 public interface CourseRepository extends CrudRepository<CourseEntity, Long> {
 
     List<CourseEntity> findByName(String name);
+
+    @Override
+    List<CourseEntity> findAll();
 }

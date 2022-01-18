@@ -9,6 +9,7 @@ import com.medadata.school.registration.repository.entity.StudentEntity;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.PersistenceException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -42,8 +43,17 @@ public class StudentService {
             } else {
                 throw new StudentNotFoundException(NOT_FOUND);
             }
-        } catch (StudentNotFoundException e) {
+        } catch (PersistenceException e) {
             throw new StudentNotFoundException(e.getMessage());
+        }
+    }
+
+    public List<Student> getAllStudents() throws StudentServiceException {
+        try {
+            List<StudentEntity> allStudents = studentRepository.findAll();
+            return studentMapper.toStudentDTO(allStudents);
+        } catch (PersistenceException e) {
+            throw new StudentServiceException(e.getMessage());
         }
     }
 

@@ -5,6 +5,8 @@ import com.medadata.school.registration.repository.entity.StudentEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper
 public interface StudentMapper {
 
@@ -13,4 +15,8 @@ public interface StudentMapper {
     StudentEntity toStudentEntity(Student s );
 
     Student toStudentDTO(StudentEntity s);
+
+    List<Student> toStudentDTO(List<StudentEntity> s);
 }
+
+

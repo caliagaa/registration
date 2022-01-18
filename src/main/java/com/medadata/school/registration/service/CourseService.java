@@ -10,6 +10,7 @@ import com.medadata.school.registration.repository.entity.CourseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.PersistenceException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -43,6 +44,15 @@ public class CourseService {
             } else {
                 throw new CourseNotFoundException(NOT_FOUND);
             }
+        } catch (PersistenceException e) {
+            throw new CourseServiceException(e.getMessage());
+        }
+    }
+
+    public List<Course> getAllCourses() throws CourseServiceException {
+        try {
+            List<CourseEntity> allCourses = courseRepository.findAll();
+            return courseMapper.toCourseDTO(allCourses);
         } catch (PersistenceException e) {
             throw new CourseServiceException(e.getMessage());
         }

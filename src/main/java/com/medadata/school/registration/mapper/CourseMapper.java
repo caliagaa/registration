@@ -5,6 +5,8 @@ import com.medadata.school.registration.repository.entity.CourseEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper
 public interface CourseMapper {
 
@@ -13,4 +15,6 @@ public interface CourseMapper {
     CourseEntity toCourseEntity(Course s );
 
     Course toCourseDTO(CourseEntity s);
+
+    List<Course> toCourseDTO(List<CourseEntity> s);
 }

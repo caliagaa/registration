@@ -10,5 +10,9 @@ spring:
     username: root
     password: password
 
+registration:
+  max-students-per-course: 50
+  student-can-register-max: 5
+
 server:
   port: 8080

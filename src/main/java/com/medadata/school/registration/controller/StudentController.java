@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/students")
 public class StudentController {
@@ -32,6 +34,11 @@ public class StudentController {
     @GetMapping("/{id}")
     public ResponseEntity<Student> readStudent(@PathVariable long id) throws StudentNotFoundException {
         return ResponseEntity.ok(studentService.getStudentById(id));
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<Student>> readAllStudents() throws StudentServiceException {
+        return ResponseEntity.ok(studentService.getAllStudents());
     }
 
     @PutMapping("/{id}")

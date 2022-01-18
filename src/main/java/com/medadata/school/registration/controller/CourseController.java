@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/courses")
 public class CourseController {
@@ -29,13 +31,18 @@ public class CourseController {
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<Course> createStudent(@RequestBody Course course) throws CourseServiceException {
+    public ResponseEntity<Course> createCourse(@RequestBody Course course) throws CourseServiceException {
         return ResponseEntity.ok(courseService.createCourse(course));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Course> readStudent(@PathVariable long id) throws CourseServiceException, CourseNotFoundException {
+    public ResponseEntity<Course> readCourse(@PathVariable long id) throws CourseServiceException, CourseNotFoundException {
         return ResponseEntity.ok(courseService.getCourseById(id));
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<Course>> readAllCourses() throws CourseServiceException {
+        return ResponseEntity.ok(courseService.getAllCourses());
     }
 
     @PutMapping("/{id}")
