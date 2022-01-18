@@ -35,13 +35,15 @@ public class StudentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Student> updateStudent(@PathVariable long id) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Student> updateStudent(@RequestBody Student student, @PathVariable long id)
+            throws StudentNotFoundException, StudentServiceException {
+        return ResponseEntity.ok(studentService.updateStudent(id, student));
     }
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStudent(@PathVariable long id) {
+    public ResponseEntity<Void> deleteStudent(@PathVariable long id) throws StudentServiceException {
+        studentService.deleteStudent(id);
         return ResponseEntity.ok().build();
     }
 }

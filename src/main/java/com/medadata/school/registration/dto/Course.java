@@ -10,4 +10,5 @@ import lombok.EqualsAndHashCode;
 public class Course {
     private long id;
     private String name;
+    private int duration;
 }
