@@ -36,7 +36,7 @@ public class RegistrationController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Registration> readCourse(@PathVariable long id) throws RegistrationServiceException, RegistrationNotFoundException {
+    public ResponseEntity<Registration> readRegistration(@PathVariable long id) throws RegistrationServiceException, RegistrationNotFoundException {
         return ResponseEntity.ok(registrationService.getRegistrationById(id));
     }
 

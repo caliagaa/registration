@@ -25,10 +25,10 @@ public class RegistrationEntity {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name = "student_id")
+    @JoinColumn(name = "STUDENT_ID")
     private StudentEntity student;
 
     @ManyToOne
-    @JoinColumn(name = "course_id")
+    @JoinColumn(name = "COURSE_ID")
     private CourseEntity course;
 }
