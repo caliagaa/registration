@@ -59,4 +59,9 @@ public class RegistrationController {
     public ResponseEntity<List<Course>> getCoursesWithoutStudents() throws RegistrationServiceException {
         return ResponseEntity.ok(registrationService.getCoursesWithoutStudents());
     }
+
+    @GetMapping("/students/without-courses")
+    public ResponseEntity<List<Student>> getStudentsWithoutCourses() throws RegistrationServiceException {
+        return ResponseEntity.ok(registrationService.getStudentsWithoutCourses());
+    }
 }

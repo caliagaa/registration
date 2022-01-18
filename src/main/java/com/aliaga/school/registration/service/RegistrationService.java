@@ -15,6 +15,7 @@ import com.aliaga.school.registration.repository.RegistrationRepository;
 import com.aliaga.school.registration.repository.StudentRepository;
 import com.aliaga.school.registration.repository.entity.CourseEntity;
 import com.aliaga.school.registration.repository.entity.RegistrationEntity;
+import com.aliaga.school.registration.repository.entity.StudentEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -131,6 +132,15 @@ public class RegistrationService {
         try {
             List<CourseEntity> coursesWithoutStudents = courseRepository.getCoursesWithoutStudents();
             return courseMapper.toCourseDTO(coursesWithoutStudents);
+        } catch (Exception e) {
+            throw new RegistrationServiceException(e.getMessage());
+        }
+    }
+
+    public List<Student> getStudentsWithoutCourses() throws RegistrationServiceException {
+        try {
+            List<StudentEntity> coursesWithoutStudents = studentRepository.getStudentsWithoutCourse();
+            return studentMapper.toStudentDTO(coursesWithoutStudents);
         } catch (Exception e) {
             throw new RegistrationServiceException(e.getMessage());
         }
