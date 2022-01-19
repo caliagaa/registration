@@ -4,9 +4,11 @@ import com.aliaga.school.registration.config.RegistrationConfig;
 import com.aliaga.school.registration.dto.Course;
 import com.aliaga.school.registration.dto.Registration;
 import com.aliaga.school.registration.dto.Student;
+import com.aliaga.school.registration.exception.RegistrationMaxAmountStudentsInCourseException;
 import com.aliaga.school.registration.exception.RegistrationNotFoundException;
 import com.aliaga.school.registration.exception.RegistrationServiceException;
 import com.aliaga.school.registration.exception.RegistrationStudentAlreadyInCourseException;
+import com.aliaga.school.registration.exception.RegistrationStudentCannotTakeMoreCoursesException;
 import com.aliaga.school.registration.mapper.CourseMapper;
 import com.aliaga.school.registration.mapper.RegistrationMapper;
 import com.aliaga.school.registration.mapper.StudentMapper;
@@ -59,10 +61,18 @@ public class RegistrationService {
         this.studentMapper = studentMapper;
     }
 
-    public void registerStudentToCourse(Registration registration) throws RegistrationServiceException, RegistrationStudentAlreadyInCourseException {
+    public void registerStudentToCourse(Registration registration) throws RegistrationServiceException, RegistrationStudentAlreadyInCourseException ,
+            RegistrationMaxAmountStudentsInCourseException , RegistrationStudentCannotTakeMoreCoursesException{
         try {
+            if (!canStudentRegisterMoreCourses(registration.getStudent().getId())) {
+                throw new RegistrationStudentCannotTakeMoreCoursesException("Student cannot register more courses");
+            }
+
             List<RegistrationEntity> registrationEntityList = new ArrayList<>();
             for (Course course: registration.getCourses()) {
+                if (!canStudentRegisterInCourse(course.getId())) {
+                    throw new RegistrationMaxAmountStudentsInCourseException("Course id: " + course.getId() + " is at maximum capacity, no more students allowed");
+                }
                 if (!validateStudentIsAlreadyInCourse(registration.getStudent().getId(), course.getId())) {
                     registrationEntityList.add(RegistrationEntity.builder()
                             .student(studentMapper.toStudentEntity(registration.getStudent()))
@@ -109,7 +119,7 @@ public class RegistrationService {
                     .stream()
                     .map(Registration::getStudent)
                     .collect(Collectors.toList());
-        } catch (Exception e) {
+        } catch (PersistenceException e) {
             throw new RegistrationServiceException(e.getMessage());
         }
     }
@@ -123,7 +133,7 @@ public class RegistrationService {
                     .collect(Collectors.toList());
             return courseMapper.toCourseDTO(courseEntities);
 
-        } catch (Exception e) {
+        } catch (PersistenceException e) {
             throw new RegistrationServiceException(e.getMessage());
         }
     }
@@ -132,7 +142,7 @@ public class RegistrationService {
         try {
             List<CourseEntity> coursesWithoutStudents = courseRepository.getCoursesWithoutStudents();
             return courseMapper.toCourseDTO(coursesWithoutStudents);
-        } catch (Exception e) {
+        } catch (PersistenceException e) {
             throw new RegistrationServiceException(e.getMessage());
         }
     }
@@ -141,7 +151,7 @@ public class RegistrationService {
         try {
             List<StudentEntity> coursesWithoutStudents = studentRepository.getStudentsWithoutCourse();
             return studentMapper.toStudentDTO(coursesWithoutStudents);
-        } catch (Exception e) {
+        } catch (PersistenceException e) {
             throw new RegistrationServiceException(e.getMessage());
         }
     }
@@ -150,5 +160,32 @@ public class RegistrationService {
         List<Course> coursesByStudent = getCoursesByStudent(studentId);
         return coursesByStudent.stream().anyMatch(f -> f.getId() == courseId);
     }
+
+    private boolean canStudentRegisterInCourse(long courseId) throws RegistrationServiceException {
+        int studentsPerCourse = studentsPerCourse(courseId);
+        return studentsPerCourse < registrationConfig.getMaxStudentsPerCourse();
+    }
+
+    private boolean canStudentRegisterMoreCourses(long studentId) throws RegistrationServiceException {
+        int coursesPerStudent = coursesPerStudent(studentId);
+        return coursesPerStudent < registrationConfig.getStudentCanRegisterMax();
+    }
+
+    private int studentsPerCourse(long courseId) throws RegistrationServiceException {
+        try {
+            return  Optional.ofNullable(registrationRepository.getStudentCountByCourse(courseId)).orElse(0);
+        } catch (PersistenceException e) {
+            throw new RegistrationServiceException(e.getMessage());
+        }
+    }
+
+    private int coursesPerStudent(long studentId) throws RegistrationServiceException {
+        try {
+            return Optional.ofNullable(registrationRepository.getCoursesCountByStudent(studentId)).orElse(0);
+        } catch (PersistenceException e) {
+            throw new RegistrationServiceException(e.getMessage());
+        }
+    }
+
 
 }

@@ -3,9 +3,11 @@ package com.aliaga.school.registration.controller;
 import com.aliaga.school.registration.dto.Course;
 import com.aliaga.school.registration.dto.Registration;
 import com.aliaga.school.registration.dto.Student;
+import com.aliaga.school.registration.exception.RegistrationMaxAmountStudentsInCourseException;
 import com.aliaga.school.registration.exception.RegistrationNotFoundException;
 import com.aliaga.school.registration.exception.RegistrationServiceException;
 import com.aliaga.school.registration.exception.RegistrationStudentAlreadyInCourseException;
+import com.aliaga.school.registration.exception.RegistrationStudentCannotTakeMoreCoursesException;
 import com.aliaga.school.registration.service.RegistrationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +31,10 @@ public class RegistrationController {
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<Void> registerStudentToCourses(@RequestBody Registration registration) throws RegistrationServiceException, RegistrationStudentAlreadyInCourseException {
+    public ResponseEntity<Void> registerStudentToCourses(@RequestBody Registration registration) throws RegistrationServiceException,
+            RegistrationStudentAlreadyInCourseException,
+            RegistrationMaxAmountStudentsInCourseException,
+            RegistrationStudentCannotTakeMoreCoursesException {
         registrationService.registerStudentToCourse(registration);
         return ResponseEntity.ok().build();
     }

@@ -45,6 +45,25 @@ class RegistrationControllerTest {
     }
 
     @Test
+    void testCreateRegistration_TwiceInSameCourse() throws Exception {
+        createRegistration();
+        mockMvc.perform(post("/registration-courses")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(readPayloadAsString("sample-registration.json"))
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testCreateRegistration_CourseAtMaxCapacity() throws Exception {
+        createRegistration();
+        createSecondCourse();
+        mockMvc.perform(post("/registration-courses")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(readPayloadAsString("sample-another-registration.json"))
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
     void testGetStudentsByCourse_Success() throws Exception {
         createRegistration();
         mockMvc.perform(get("/registration-courses/students?course-id=1")
