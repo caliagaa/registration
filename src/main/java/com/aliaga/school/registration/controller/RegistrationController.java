@@ -3,6 +3,7 @@ package com.aliaga.school.registration.controller;
 import com.aliaga.school.registration.dto.Course;
 import com.aliaga.school.registration.dto.Registration;
 import com.aliaga.school.registration.dto.Student;
+import com.aliaga.school.registration.exception.RegistrationAlreadyExistsException;
 import com.aliaga.school.registration.exception.RegistrationMaxAmountStudentsInCourseException;
 import com.aliaga.school.registration.exception.RegistrationNotFoundException;
 import com.aliaga.school.registration.exception.RegistrationServiceException;
@@ -34,7 +35,7 @@ public class RegistrationController {
     public ResponseEntity<Void> registerStudentToCourses(@RequestBody Registration registration) throws RegistrationServiceException,
             RegistrationStudentAlreadyInCourseException,
             RegistrationMaxAmountStudentsInCourseException,
-            RegistrationStudentCannotTakeMoreCoursesException {
+            RegistrationStudentCannotTakeMoreCoursesException, RegistrationAlreadyExistsException {
         registrationService.registerStudentToCourse(registration);
         return ResponseEntity.ok().build();
     }

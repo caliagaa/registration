@@ -1,6 +1,7 @@
 package com.aliaga.school.registration.service;
 
 import com.aliaga.school.registration.dto.Course;
+import com.aliaga.school.registration.exception.CourseAlreadyExistsException;
 import com.aliaga.school.registration.exception.CourseNotFoundException;
 import com.aliaga.school.registration.exception.CourseServiceException;
 import com.aliaga.school.registration.mapper.CourseMapper;
@@ -26,8 +27,11 @@ public class CourseService {
         this.courseMapper = courseMapper;
     }
 
-    public Course createCourse(Course course) throws CourseServiceException {
+    public Course createCourse(Course course) throws CourseServiceException, CourseAlreadyExistsException {
         try {
+            if(isCourseAlreadyCreated(course)) {
+                throw new CourseAlreadyExistsException("Course already exists");
+            }
             CourseEntity newCourse = courseRepository.save(courseMapper.toCourseEntity(course));
             return courseMapper.toCourseDTO(newCourse);
         } catch (PersistenceException e) {
@@ -78,5 +82,17 @@ public class CourseService {
         } catch (PersistenceException e) {
             throw new CourseServiceException(e.getMessage());
         }
+    }
+
+    private boolean isCourseAlreadyCreated(Course course) throws CourseServiceException {
+        try {
+            List<CourseEntity> courseMatches = courseRepository.findByName(course.getName());
+            if (!courseMatches.isEmpty()) {
+                return true;
+            }
+        } catch (PersistenceException e) {
+            throw new CourseServiceException(e.getMessage());
+        }
+        return false;
     }
 }

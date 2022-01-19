@@ -13,6 +13,8 @@ public interface RegistrationRepository extends CrudRepository<RegistrationEntit
     @Override
     List<RegistrationEntity> findAll();
 
+    List<RegistrationEntity> findByStudentIdAndCourseId(long studentId, long courseId);
+
     List<RegistrationEntity> getStudentsByCourseId(long courseId);
 
     List<RegistrationEntity> getCoursesByStudentId(long studentId);

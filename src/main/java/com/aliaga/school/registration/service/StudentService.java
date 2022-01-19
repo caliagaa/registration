@@ -1,6 +1,7 @@
 package com.aliaga.school.registration.service;
 
 import com.aliaga.school.registration.dto.Student;
+import com.aliaga.school.registration.exception.StudentAlreadyExistsException;
 import com.aliaga.school.registration.exception.StudentNotFoundException;
 import com.aliaga.school.registration.exception.StudentServiceException;
 import com.aliaga.school.registration.mapper.StudentMapper;
@@ -26,8 +27,11 @@ public class StudentService {
         this.studentMapper = studentMapper;
     }
 
-    public Student createStudent(Student student) throws StudentServiceException {
+    public Student createStudent(Student student) throws StudentServiceException, StudentAlreadyExistsException {
         try {
+            if(isStudentAlreadyCreated(student)) {
+                throw new StudentAlreadyExistsException("Student already exists");
+            }
             StudentEntity newStudent = studentRepository.save(studentMapper.toStudentEntity(student));
             return studentMapper.toStudentDTO(newStudent);
         } catch (PersistenceException e) {
@@ -80,4 +84,15 @@ public class StudentService {
         }
     }
 
+    private boolean isStudentAlreadyCreated(Student student) throws StudentServiceException {
+        try {
+            List<StudentEntity> studentMatches = studentRepository.findByFirstnameAndLastname(student.getFirstname(), student.getLastname());
+            if (!studentMatches.isEmpty()) {
+                return true;
+            }
+        } catch (PersistenceException e) {
+            throw new StudentServiceException(e.getMessage());
+        }
+        return false;
+    }
 }

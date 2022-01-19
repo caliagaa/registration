@@ -4,11 +4,13 @@ import com.aliaga.school.registration.config.RegistrationConfig;
 import com.aliaga.school.registration.dto.Course;
 import com.aliaga.school.registration.dto.Registration;
 import com.aliaga.school.registration.dto.Student;
+import com.aliaga.school.registration.exception.RegistrationAlreadyExistsException;
 import com.aliaga.school.registration.exception.RegistrationMaxAmountStudentsInCourseException;
 import com.aliaga.school.registration.exception.RegistrationNotFoundException;
 import com.aliaga.school.registration.exception.RegistrationServiceException;
 import com.aliaga.school.registration.exception.RegistrationStudentAlreadyInCourseException;
 import com.aliaga.school.registration.exception.RegistrationStudentCannotTakeMoreCoursesException;
+import com.aliaga.school.registration.exception.StudentServiceException;
 import com.aliaga.school.registration.mapper.CourseMapper;
 import com.aliaga.school.registration.mapper.RegistrationMapper;
 import com.aliaga.school.registration.mapper.StudentMapper;
@@ -61,15 +63,18 @@ public class RegistrationService {
         this.studentMapper = studentMapper;
     }
 
-    public void registerStudentToCourse(Registration registration) throws RegistrationServiceException, RegistrationStudentAlreadyInCourseException ,
-            RegistrationMaxAmountStudentsInCourseException , RegistrationStudentCannotTakeMoreCoursesException{
+    public void registerStudentToCourse(Registration registration)
+            throws RegistrationServiceException, RegistrationStudentAlreadyInCourseException ,
+            RegistrationMaxAmountStudentsInCourseException , RegistrationStudentCannotTakeMoreCoursesException, RegistrationAlreadyExistsException {
         try {
             if (!canStudentRegisterMoreCourses(registration.getStudent().getId())) {
                 throw new RegistrationStudentCannotTakeMoreCoursesException("Student cannot register more courses");
             }
-
             List<RegistrationEntity> registrationEntityList = new ArrayList<>();
             for (Course course: registration.getCourses()) {
+                if (isRegistrationAlreadyCreated(registration.getStudent().getId(), course.getId())) {
+                    throw new RegistrationAlreadyExistsException("Registration already exists");
+                }
                 if (!canStudentRegisterInCourse(course.getId())) {
                     throw new RegistrationMaxAmountStudentsInCourseException("Course id: " + course.getId() + " is at maximum capacity, no more students allowed");
                 }
@@ -187,5 +192,17 @@ public class RegistrationService {
         }
     }
 
-
+    private boolean isRegistrationAlreadyCreated(long studentId, long courseId) throws RegistrationServiceException {
+        try {
+            List<RegistrationEntity> registrationMatches = registrationRepository.findByStudentIdAndCourseId(studentId, courseId);
+            if (!registrationMatches.isEmpty()) {
+                return true;
+            }
+        } catch (PersistenceException e) {
+            throw new RegistrationServiceException(e.getMessage());
+        }
+        return false;
+    }
 }
+
+

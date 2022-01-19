@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface StudentRepository extends CrudRepository<StudentEntity, Long> {
 
-    List<StudentEntity> findByLastname(String lastname);
+    List<StudentEntity> findByFirstnameAndLastname(String firstname, String lastname);
 
     @Override
     List<StudentEntity> findAll();

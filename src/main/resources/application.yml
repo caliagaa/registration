@@ -9,10 +9,15 @@ spring:
     url: jdbc:mysql://localhost:3306/school?&useSSL=false
     username: root
     password: password
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
 
 registration:
   max-students-per-course: 50
   student-can-register-max: 5
 
 server:
+  error:
+    include-message: always
   port: 8080

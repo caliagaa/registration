@@ -1,6 +1,7 @@
 package com.aliaga.school.registration.controller;
 
 import com.aliaga.school.registration.dto.Course;
+import com.aliaga.school.registration.exception.CourseAlreadyExistsException;
 import com.aliaga.school.registration.exception.CourseNotFoundException;
 import com.aliaga.school.registration.exception.CourseServiceException;
 import com.aliaga.school.registration.service.CourseService;
@@ -27,7 +28,7 @@ public class CourseController {
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<Course> createCourse(@RequestBody Course course) throws CourseServiceException {
+    public ResponseEntity<Course> createCourse(@RequestBody Course course) throws CourseServiceException, CourseAlreadyExistsException {
         return ResponseEntity.ok(courseService.createCourse(course));
     }
 
